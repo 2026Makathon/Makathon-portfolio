@@ -1,0 +1,43 @@
+package dynamic_beat_22;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+
+import javazoom.jl.player.Player;
+import java.io.InputStream;
+import javazoom.jl.player.Player;
+import dynamic_beat_15.Main;
+
+public class Music extends Thread {
+
+	private Player player;
+	private boolean isLoop;
+	private File file;
+	private FileInputStream fis;
+	private BufferedInputStream bis;
+	
+	public Music(String name, boolean isLoop) {
+        try {
+            this.isLoop = isLoop;
+            
+            // --- 여기서부터 수정된 코드 ---
+            // 경로("/music/")는 실제 음악 파일이 있는 폴더명에 맞게 조정해 주세요.
+            InputStream is = Main.class.getResourceAsStream("/music/" + name);
+            
+            if (is == null) {
+                System.out.println("음악 파일을 찾을 수 없습니다: " + name);
+                return;
+            }
+            
+            bis = new BufferedInputStream(is);
+            player = new Player(bis);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	
+	
+}
+

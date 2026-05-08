@@ -1,0 +1,204 @@
+package dynamic_beat_16;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.util.ArrayList;
+import java.util.Random;
+import javax.swing.ImageIcon;
+
+import dynamic_beat_15.Main;
+import dynamic_beat_15.Music;
+
+public class Game extends Thread {
+
+    // --- 이미지 리소스 ---
+    private Image noteRouteSImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+    private Image noteRouteDImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+    private Image noteRouteFImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+    private Image noteRouteSpace1Image = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+    private Image noteRouteSpace2Image = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+    private Image noteRouteJImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+    private Image noteRouteKImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+    private Image noteRouteLImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+
+    private Image noteRouteLineImage = new ImageIcon(Main.class.getResource("/images/noteRouteLine.png")).getImage();
+    private Image judgementLineImage = new ImageIcon(Main.class.getResource("/images/judgementLine.png")).getImage();
+    private Image gameInfoImage = new ImageIcon(Main.class.getResource("/images/gameInfo.png")).getImage();
+
+    private Image orangeFlareImage = null;    
+    private Image judgeImage = null;
+
+    private Image keyPadSImage = new ImageIcon(Main.class.getResource("/images/keyPadBasic.png")).getImage();
+    private Image keyPadDImage = new ImageIcon(Main.class.getResource("/images/keyPadBasic.png")).getImage();
+    private Image keyPadFImage = new ImageIcon(Main.class.getResource("/images/keyPadBasic.png")).getImage();
+    private Image keyPadSpace1Image = new ImageIcon(Main.class.getResource("/images/keyPadBasic.png")).getImage();
+    private Image keyPadSpace2Image = new ImageIcon(Main.class.getResource("/images/keyPadBasic.png")).getImage();
+    private Image keyPadJImage = new ImageIcon(Main.class.getResource("/images/keyPadBasic.png")).getImage();
+    private Image keyPadKImage = new ImageIcon(Main.class.getResource("/images/keyPadBasic.png")).getImage();
+    private Image keyPadLImage = new ImageIcon(Main.class.getResource("/images/keyPadBasic.png")).getImage();
+    
+    // --- 게임 데이터 변수 ---
+    private String titleName;
+    private String difficulty;
+    private String musicTitle;
+    private Music gameMusic;
+
+    // 점수 및 콤보 관련 변수 추가
+    private int score = 0;
+    private int combo = 0;
+    private int maxCombo = 0;
+
+    ArrayList<Note> noteList = new ArrayList<Note>();
+
+    public Game(String titleName, String difficulty, String musicTitle) {
+        this.titleName = titleName;
+        this.difficulty = difficulty;
+        this.musicTitle = musicTitle;
+        gameMusic = new Music(this.musicTitle, false);
+    }
+
+    public void screenDraw(Graphics2D g) {
+        // 배경 및 라인 그리기
+        g.drawImage(noteRouteSImage, 528, 30, null);
+        g.drawImage(noteRouteDImage, 632, 30, null);
+        g.drawImage(noteRouteFImage, 736, 30, null);
+        g.drawImage(noteRouteSpace1Image, 840, 30, null);
+        g.drawImage(noteRouteSpace2Image, 940, 30, null);
+        g.drawImage(noteRouteJImage, 1044, 30, null);
+        g.drawImage(noteRouteKImage, 1148, 30, null);
+        g.drawImage(noteRouteLImage, 1252, 30, null);
+
+        // 구분선
+        for(int i=0; i<8; i++) g.drawImage(noteRouteLineImage, 524 + (i*104 + (i>3?4:0)), 30, null);
+
+        g.drawImage(gameInfoImage, 0, 1020, null);
+        g.drawImage(judgementLineImage, 0, 960, null);
+
+        // 노트 그리기 및 Miss 처리
+        for (int i = 0; i < noteList.size(); i++) {
+            Note note = noteList.get(i);
+            if (!note.isProceeded()) {
+                noteList.remove(i);
+                i--;
+            } else {
+                note.screenDraw(g);
+                if(note.getY() > 1020) { // Miss 판정
+                    judgeEvent("Miss");
+                    note.setProceeded(false);
+                }
+            }
+        }
+
+        // 텍스트 렌더링 설정
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        
+        // 점수 표시
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 30));
+        g.drawString(titleName, 20, 1065);
+        g.drawString(String.format("%07d", score), 840, 1065);
+        g.drawString(difficulty, 1820, 1060);
+
+        // 콤보 표시
+        if (combo > 0) {
+            g.setFont(new Font("Arial", Font.BOLD , 45));
+            g.drawString(combo + " COMBO", 830, 500);
+        }
+
+        // 판정 이미지 및 이펙트
+        if (orangeFlareImage != null) g.drawImage(orangeFlareImage, 320, 370, null);
+        if (judgeImage != null) g.drawImage(judgeImage, 750, 600, null);
+        
+        // 키패드 베이스
+        g.drawImage(keyPadSImage, 528, 580, null);
+        g.drawImage(keyPadDImage, 632, 580, null);
+        g.drawImage(keyPadFImage, 736, 580, null);
+        g.drawImage(keyPadSpace1Image, 840, 580, null);
+        g.drawImage(keyPadSpace2Image, 940, 580, null);
+        g.drawImage(keyPadJImage, 1044, 580, null);
+        g.drawImage(keyPadKImage, 1148, 580, null);
+        g.drawImage(keyPadLImage, 1252, 580, null);
+    }
+
+    // --- 판정 이벤트 시스템 ---
+    public void judgeEvent(String judge) {
+        if (judge.equals("Miss")) {
+            judgeImage = new ImageIcon(Main.class.getResource("/images/judgeMiss.png")).getImage();
+            combo = 0; // 콤보 초기화
+        } else if (!judge.equals("None")) {
+            // 플레어 효과
+            orangeFlareImage = new ImageIcon(Main.class.getResource("/images/orangeFlare.png")).getImage();
+            new ImageEffectTimer("Flare").start();
+
+            // 콤보 및 점수 계산
+            combo++;
+            if (combo > maxCombo) maxCombo = combo;
+            
+            int baseScore = 0;
+            if (judge.equals("Perfect")) baseScore = 500;
+            else if (judge.equals("Great")) baseScore = 300;
+            else if (judge.equals("Good")) baseScore = 200;
+            else baseScore = 100; // Early, Late
+
+            score += baseScore + (combo * 10); // 콤보 보너스 적용
+
+            judgeImage = new ImageIcon(Main.class.getResource("/images/judge" + judge + ".png")).getImage();
+        }
+        
+        if (!judge.equals("None")) {
+            new ImageEffectTimer("Judge").start();
+        }
+    }
+
+    class ImageEffectTimer extends Thread {
+        private String type;
+        public ImageEffectTimer(String type) { this.type = type; }
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(500);
+                if (type.equals("Flare")) orangeFlareImage = null;
+                else if (type.equals("Judge")) judgeImage = null;
+            } catch (InterruptedException e) { e.printStackTrace(); }
+        }
+    }
+
+    // --- 이하 키 입력 및 노트 생성 로직 (기존과 동일) ---
+    public void judge(String input) {
+        for(int i = 0; i < noteList.size(); i++) {
+            Note note = noteList.get(i);
+            if(input.equals(note.getNoteType())){
+                judgeEvent(note.judge());
+                break;
+            }
+        }
+    }
+
+    public void pressS() { judge("S"); keyPadSImage = new ImageIcon(Main.class.getResource("/images/keyPadPressed.png")).getImage(); new Music("drum1.mp3", false).start(); }
+    public void releaseS() { keyPadSImage = new ImageIcon(Main.class.getResource("/images/keyPadBasic.png")).getImage(); }
+    public void pressD() { judge("D"); keyPadDImage = new ImageIcon(Main.class.getResource("/images/keyPadPressed.png")).getImage(); new Music("drum1.mp3", false).start(); }
+    public void releaseD() { keyPadDImage = new ImageIcon(Main.class.getResource("/images/keyPadBasic.png")).getImage(); }
+    public void pressF() { judge("F"); keyPadFImage = new ImageIcon(Main.class.getResource("/images/keyPadPressed.png")).getImage(); new Music("drum1.mp3", false).start(); }
+    public void releaseF() { keyPadFImage = new ImageIcon(Main.class.getResource("/images/keyPadBasic.png")).getImage(); }
+    public void pressSpace() { judge("Space"); keyPadSpace1Image = new ImageIcon(Main.class.getResource("/images/keyPadPressed.png")).getImage(); keyPadSpace2Image = new ImageIcon(Main.class.getResource("/images/keyPadPressed.png")).getImage(); new Music("drum1.mp3", false).start(); }
+    public void releaseSpace() { keyPadSpace1Image = new ImageIcon(Main.class.getResource("/images/keyPadBasic.png")).getImage(); keyPadSpace2Image = new ImageIcon(Main.class.getResource("/images/keyPadBasic.png")).getImage(); }
+    public void pressJ() { judge("J"); keyPadJImage = new ImageIcon(Main.class.getResource("/images/keyPadPressed.png")).getImage(); new Music("drum1.mp3", false).start(); }
+    public void releaseJ() { keyPadJImage = new ImageIcon(Main.class.getResource("/images/keyPadBasic.png")).getImage(); }
+    public void pressK() { judge("K"); keyPadKImage = new ImageIcon(Main.class.getResource("/images/keyPadPressed.png")).getImage(); new Music("drum1.mp3", false).start(); }
+    public void releaseK() { keyPadKImage = new ImageIcon(Main.class.getResource("/images/keyPadBasic.png")).getImage(); }
+    public void pressL() { judge("L"); keyPadLImage = new ImageIcon(Main.class.getResource("/images/keyPadPressed.png")).getImage(); new Music("drum1.mp3", false).start(); }
+    public void releaseL() { keyPadLImage = new ImageIcon(Main.class.getResource("/images/keyPadBasic.png")).getImage(); }
+
+    @Override
+    public void run() { dropNotes(); }
+    public void close() { gameMusic.close(); this.interrupt(); }
+
+    public void dropNotes() {
+        // ... (생략: 기존의 dropNotes 무작위 생성 로직 유지) ...
+        // 만약 dropNotes 코드가 필요하시면 위 답변의 로직을 그대로 붙여넣으시면 됩니다.
+        gameMusic.start();
+    }
+}

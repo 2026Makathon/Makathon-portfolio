@@ -1,5 +1,0 @@
-INDEX VERSION 1.134+C:\Users\Administrator\Desktop\Makathon-portfolio\Beat Maple\.metadata\.plugins\org.eclipse.jdt.core
-2420197694.index
-1865797976.index
-365586912.index
-3376009319.index

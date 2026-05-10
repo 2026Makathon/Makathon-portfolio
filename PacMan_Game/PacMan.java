@@ -255,6 +255,19 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
     }
 
    
+    public void playSound(String soundFilePath) {
+    try {
+        // 사운드 파일 로드 (파일 경로에 맞게 수정 필요)
+        File soundFile = new File("./eatingSound.wav");
+        AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+        Clip clip = AudioSystem.getClip();
+        clip.open(audioIn);
+        clip.start(); // 재생
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+
     public void move() {
         pacman.x += pacman.velocityX;
         pacman.y += pacman.velocityY;
@@ -310,7 +323,7 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
                 foodeaten = food;
                 score += 10;
 
-               
+               playSound("./eatingSound.wav");
 
                 if (score > highScore) {
                     highScore = score;

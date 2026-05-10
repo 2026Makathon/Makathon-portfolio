@@ -3,7 +3,7 @@
   <dontWrapJar>false</dontWrapJar>
   <headerType>console</headerType>
   <jar>C:\Users\gudrb\OneDrive\Desktop\개발공부\Makathon-portfolio\PacMan_Game\PacMan_Game.jar</jar>
-  <outfile>C:\Users\gudrb\OneDrive\Desktop\개발공부\Makathon-portfolio\PacMan.exe</outfile>
+  <outfile>C:\Users\gudrb\OneDrive\Desktop\개발공부\Makathon-portfolio\PacMan_Game\PacMan.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>

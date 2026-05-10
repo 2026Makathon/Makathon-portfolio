@@ -10,7 +10,7 @@ public class Music extends Thread {
     private String resourcePath;
     private BufferedInputStream bis;
     
-    // 1. 음악이 끝났는지 저장할 변수 추가
+    
     private boolean isFinished = false;
 
     public Music(String name, boolean isLoop) {
@@ -24,7 +24,7 @@ public class Music extends Thread {
         }
     }
 
-    // 2. 외부에서 음악 종료 여부를 확인할 수 있는 getter 추가
+    
     public boolean isFinished() {
         return isFinished;
     }
@@ -47,14 +47,14 @@ public class Music extends Thread {
         try {
             do {
                 if (player != null) {
-                    player.play(); // 음악이 재생되는 동안 여기서 멈춰있음
+                    player.play(); 
                 }
-                // 재생이 끝나면 다시 파일을 읽어옴 (반복용)
+                
                 bis = new BufferedInputStream(Main.class.getResourceAsStream(resourcePath));
                 player = new Player(bis);
             } while (isLoop);
             
-            // 3. 루프를 빠져나왔다는 건 음악이 완전히 끝났다는 뜻
+            
             isFinished = true; 
             
         } catch (Exception e) {
@@ -63,7 +63,7 @@ public class Music extends Thread {
     }
 
 	public void pause() {
-		// TODO Auto-generated method stub
+		
 		
 	}
 }

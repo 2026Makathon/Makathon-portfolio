@@ -49,7 +49,7 @@ public class Game extends Thread {
 	private int countGreat = 0;
 	private int countGood = 0;
 	private int countMiss = 0;
-	// 필요)
+	
 
 	ArrayList<Note> noteList = new ArrayList<Note>();
 
@@ -318,9 +318,9 @@ public class Game extends Thread {
 	public void dropNotes() {
 		Random rb = new Random();
 		ArrayList<Beat> beatList = new ArrayList<Beat>();
-		int startTime = 2000; // 시작 대기 시간 (약 2초 뒤 시작)
+		int startTime = 2000; 
 		int gap = 125;
-		int totalDuration = 240000; // 4분 기준
+		int totalDuration = 240000; 
 
 		if (difficulty.equals("Easy"))
 			gap = 200;
@@ -410,70 +410,69 @@ public class Game extends Thread {
 	}
 
 	public void judgeEvent(String judge) {
-		if (!judge.equals("None")) {
+	    if (!judge.equals("None")) {
+	        
+	        try {
+	            orangeFlareImage = new ImageIcon(Main.class.getResource("images/orangeFlare.png")).getImage();
+	            new ImageEffectTimer("Flare").start();
+	        } catch (Exception e) { }
 
-			try {
-				orangeFlareImage = new ImageIcon(Main.class.getResource("images/orangeFlare.png")).getImage();
-				new ImageEffectTimer("Flare").start();
-			} catch (Exception e) {
-			}
+	        if (judge.equals("Miss")) {
+	            combo = 0;
+	            countMiss++;
+	            new Music("drum5.mp3", false).start();
+	            judgeImage = new ImageIcon(Main.class.getResource("images/judgeMiss.png")).getImage();
+	            new ImageEffectTimer("Judge").start();
+	        } 
+	        else { 
+	            combo++;
+	            
+	            
+	            if (combo > maxCombo) {
+	                maxCombo = combo;
+	            }
 
-			if (judge.equals("Miss")) {
-				combo = 0;
-				countMiss++;
+	            
+	            comboFontSize = 50;
 
-				new Music("drum5.mp3", false).start();
+	           
+	            if (combo == 50) {
+	                showBonus = true;
+	                bonusTimer = 100;
+	                score += 1000;
+	            }
 
-				try {
+	           
+	            int baseScore = 0;
+	            if (judge.equals("Perfect")) {
+	                baseScore = 500;
+	                countPerfect++;
+	                new Music("drum4.mp3", false).start();
+	            } else if (judge.equals("Great")) {
+	                baseScore = 300;
+	                countGreat++;
+	                new Music("drum4.mp3", false).start(); // 또는 다른 효과음
+	            } else if (judge.equals("Good")) {
+	                baseScore = 200;
+	                countGood++;
+	                new Music("drum4.mp3", false).start();
+	            } else if (judge.equals("Early") || judge.equals("Late")) {
+	                baseScore = 100;
+	            }
 
-					judgeImage = new ImageIcon(Main.class.getResource("images/judgeMiss.png")).getImage();
-					new ImageEffectTimer("Judge").start();
-				} catch (Exception e) {
-					judgeImage = null;
-				}
+	            
+	            score += baseScore + (combo * 10);
 
-			} else {
-
-				combo++;
-
-				if (judge.equals("Perfect")) {
-					new Music("drum4.mp3", false).start();
-
-					if (combo > maxCombo) {
-						maxCombo = combo;
-					}
-
-					if (combo == 50) {
-						showBonus = true;
-						bonusTimer = 100;
-						score += 1000;
-					}
-
-					int baseScore = 0;
-					if (judge.equals("Perfect")) {
-						baseScore = 500;
-						countPerfect++;
-					} else if (judge.equals("Great")) {
-						baseScore = 300;
-						countGreat++;
-					} else if (judge.equals("Good")) {
-						baseScore = 200;
-						countGood++;
-					} else if (judge.equals("Early") || judge.equals("Late"))
-						baseScore = 100;
-
-					score += baseScore + (combo * 10);
-
-					try {
-						String imagePath = "images/judge" + judge + ".png";
-						judgeImage = new ImageIcon(Main.class.getResource(imagePath)).getImage();
-						new ImageEffectTimer("Judge").start();
-					} catch (Exception e) {
-						judgeImage = null;
-					}
-				}
-			}
-		}
+	            
+	            try {
+	                String imagePath = "images/judge" + judge + ".png";
+	                judgeImage = new ImageIcon(Main.class.getResource(imagePath)).getImage();
+	                new ImageEffectTimer("Judge").start();
+	            } catch (Exception e) {
+	                judgeImage = null;
+	            }
+	        }
+	    }
 	}
 	
 }

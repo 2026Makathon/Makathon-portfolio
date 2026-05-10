@@ -8,12 +8,15 @@
 * **슈팅게임 - 박영준**
   * 메이플 스토리 디자인을 담은 슈팅 미니 게임
 
-### .exe 파일 실행 방법
+### 필독 : .exe 파일 실행 방법
 https://www.oracle.com/kr/java/technologies/downloads/#jdk26-windows <br>
 링크에 들어가서 각 os에 맞는 최신 버전 x64 Installer를 다운로드하면 됩니다.
 이후 각 .exe 파일을 실행해주세요.
 ***
 ## 디자인팀
-
+* **강유정**
+  * 업로드 예정
+* **정예지**
+  * 업로드 예정
 
  

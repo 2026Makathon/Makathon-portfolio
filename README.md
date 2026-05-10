@@ -15,7 +15,7 @@ https://www.oracle.com/kr/java/technologies/downloads/#jdk26-windows <br>
 링크에 들어가서 각 os에 맞는 최신 버전 x64 Installer를 다운로드하면 됩니다.
 이후 각 .exe 파일을 실행해주세요~
 ***
- ## 디자인팀
+## 디자인팀
 
 
  

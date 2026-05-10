@@ -3,6 +3,10 @@
 	<section name="java.lang.Class">
 		<item key="replaceBarOpen" value="false"/>
 		<list key="findhistory">
+			<item value="music"/>
+			<item value="music "/>
+			<item value="Game"/>
+			<item value="private Game game"/>
 			<item value="elli"/>
 			<item value="public Music(String name, boolean isLoop)"/>
 			<item value="} catch (Exception e) {"/>
@@ -14,10 +18,6 @@
 			<item value="run"/>
 			<item value="public void judgeEvent(String judge)"/>
 			<item value="for (int i = 0; i &lt; noteList.size(); i++) {"/>
-			<item value="public void drop() {"/>
-			<item value="public void drop()"/>
-			<item value="public void drop() "/>
-			<item value="flare"/>
 		</list>
 	</section>
 </section>

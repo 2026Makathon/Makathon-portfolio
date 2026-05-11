@@ -7,6 +7,7 @@
   * 메이플 스토리 요소를 가미한 PacMan게임
 * **슈팅게임 - 박영준**
   * 메이플 스토리 디자인을 담은 슈팅 미니 게임
+  * https://github.com/pyj-0313/Maple-Shooting-game
 
 ### 필독 : .exe 파일 실행 방법
 https://www.oracle.com/kr/java/technologies/downloads/#jdk26-windows <br>
